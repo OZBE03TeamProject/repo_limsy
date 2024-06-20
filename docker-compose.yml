@@ -1,4 +1,4 @@
-version: "3.11" # docker composeapi
+version: "3.11" #  docker composeapi
 services:
   app: #django
     build:
