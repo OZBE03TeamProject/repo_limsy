@@ -1,6 +1,6 @@
-version: "3.11" #  docker composeapi
+version: "3.11"
 services:
-  app: #django
+  app:
     build:
       context: .
       args:
@@ -9,4 +9,24 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
-    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=youtube
+      - DB_USER=limsy0310
+      - DB_PASS=password123
+    depends_on:
+      - db
+
+  # app: 과 같은 뎁스로
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=youtube
+      - POSTGRES_USER=limsy0310
+      - POSTGRES_PASSWORD=password123
